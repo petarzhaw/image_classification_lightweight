@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AlexNet Image Classifier</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="mb-4">AlexNet Image Classifier</h1>
+        <form id="image-form" class="mb-4">
+            <div class="form-group">
+                <label for="image">Select an image:</label>
+                <input type="file" class="form-control-file" id="image" name="image">
+                <img id="uploaded-image" src="#" alt="Uploaded Image" style="display: none; width: 260px; height: 260px; object-fit: cover;"/>
+            </div>
+            <button type="submit" class="btn btn-primary">Classify Image</button>
+        </form>
+        <div id="result"></div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+    <script>
+        const imageInput = document.getElementById('image');
+        const uploadedImage = document.getElementById('uploaded-image');
+
+        imageInput.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    uploadedImage.src = e.target.result;
+                    uploadedImage.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        const form = document.getElementById('image-form');
+        const resultDiv = document.getElementById('result');
+
+        form.addEventListener('submit', (event) => {
+            event.preventDefault();
+            const formData = new FormData(form);
+            fetch('/predict', {
+                method: 'POST',
+                body: formData
+            }).then((response) => {
+                return response.json();
+            }).then((result) => {
+                resultDiv.innerHTML = '';
+                for (let i = 0; i < result.length; i++) {
+                    resultDiv.innerHTML += `
+                        <div class="alert alert-success mt-4" role="alert">
+                            <h4 class="alert-heading">Classification Result ${i+1}</h4>
+                            <p>Class: ${result[i].class}, Probability: ${result[i].probability}</p>
+                        </div>
+                    `;
+                }
+            }).catch((error) => {
+                console.error(error);
+            });
+        });
+
+    </script>
+</body>
+</html>
