@@ -5,15 +5,58 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #1a1a1a;
+            color: #f0f0f0;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .container {
+            max-width: 500px;
+            margin-top: 5%;
+        }
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 600;
+            text-align: center;
+        }
+        label {
+            font-size: 1.125rem;
+            font-weight: 500;
+        }
+        button {
+            background-color: #007bff;
+            font-size: 1.125rem;
+            font-weight: 500;
+            display: block;
+            width: 100%;
+        }
+        #result .alert {
+            background-color: #333;
+            border-color: #007bff;
+        }
+        #result .alert-heading {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+        #uploaded-image {
+            display: none;
+            width: 100%;
+            height: 260px;
+            object-fit: cover;
+            margin-top: 1rem;
+            border-radius: 5px;
+        }
+    </style>
 </head>
 <body>
-    <div class="container mt-5">
+    <div class="container">
         <h1 class="mb-4">AlexNet Image Classifier</h1>
         <form id="image-form" class="mb-4">
             <div class="form-group">
                 <label for="image">Select an image:</label>
                 <input type="file" class="form-control-file" id="image" name="image">
-                <img id="uploaded-image" src="#" alt="Uploaded Image" style="display: none; width: 260px; height: 260px; object-fit: cover;"/>
+                <img id="uploaded-image" src="#" alt="Uploaded Image"/>
             </div>
             <button type="submit" class="btn btn-primary">Classify Image</button>
         </form>
@@ -53,7 +96,7 @@
                 return response.json();
             }).then((result) => {
                 resultDiv.innerHTML = '';
-                for (let i = 0; i < result.length; i++) {
+                for (let i = 0; i< result.length; i++) {
                     resultDiv.innerHTML += `
                         <div class="alert alert-success mt-4" role="alert">
                             <h4 class="alert-heading">Classification Result ${i+1}</h4>

@@ -12,7 +12,7 @@ app = Flask(__name__)
 Bootstrap(app)
 
  # Path to the model
-model_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'squeezenet1.0-12-int8.onnx')
+model_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'bvlcalexnet-12-qdq.onnx')
 # Load the model
 inference = onnxruntime.InferenceSession(model_path, providers=['CPUExecutionProvider'])
 
