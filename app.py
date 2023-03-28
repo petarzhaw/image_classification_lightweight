@@ -37,10 +37,12 @@ def predict():
     img = img.convert('RGB')    
     img = img.resize((224, 224))  # Resize the image to the expected input size for AlexNet
     img_arr = np.array(img).astype(np.float32)  # Convert the image to a numpy array
-    mean = np.array([0.485, 0.456, 0.406], dtype=np.float32)
-    std = np.array([0.229, 0.224, 0.225], dtype=np.float32)
-    img_arr = img_arr / 255.0  # convert pixel values to the range [0, 1]
-    img_arr = (img_arr - mean) / std  # normalize using the provided mean and std
+    mean = np.array([123.68, 116.779, 103.939], dtype=np.float32)  # Update the mean pixel values
+    std = np.array([1, 1, 1], dtype=np.float32)  # Set the standard deviation to 1 for each channel
+
+    img_arr = img_arr - mean  # Subtract the mean directly
+    img_arr = img_arr / std  # Normalize using the provided mean and std
+
 
     img_arr = np.expand_dims(img_arr, axis=0)  # Add a batch dimension
     img_arr = np.transpose(img_arr, (0, 3, 1, 2))  # Transpose to (batch_size, channels, height, width)
