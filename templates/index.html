@@ -1,95 +1,33 @@
 <!DOCTYPE html>
 <html>
-<head>
+  <head>
     <title>AlexNet Image Classifier</title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-    <style>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+    />
+    <link rel="stylesheet" type="text/css" href="/static/styles.css">
+  </head>
 
-        img{
-            
-                display: block;
-                margin-left: auto;
-                margin-right: auto;
-                width: 50%;
-        }
-        p{
-            color: #f0f0f0;
-        }
-        body {
-            background-color: #403d3d;
-            color: #f0f0f0;
-            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-        }
-        .container {
-            max-width: 700px;
-            margin-top: 5%;
-        }
-        h1 {
-            font-size: 2.5rem;
-            font-weight: 600;
-            text-align: center;
-        }
-        label {
-            font-size: 1.125rem;
-            font-weight: 500;
-        }
-        button {
-            background-color: #007bff;
-            font-size: 1.125rem;
-            font-weight: 500;
-            display: block;
-            width: 100%;
-        }
-        #result .alert {
-            background-color: #333;
-            border-color: #007bff;
-            color: #f0f0f0;
-        }
-        #result .alert-heading {
-            font-size: 1.25rem;
-            font-weight: 600;
-        }
-        #uploaded-image {
-            display: none;
-            width: 300px;
-            height: 300px;
-            object-fit: cover;
-            margin-top: 1rem;
-            border-radius: 5px;
-        }
-        .fill {
-            height: 100%;
-            background-color: #00a700;
-            position: absolute;
-            top: 0;
-            left: 0;
-        }
-        .class-column {
-            width: 200px; 
-        }
-        .result-column {
-            width: 180px; 
-        }
-        .progress {
-            background-color: rgb(151, 150, 150);
-        }
-
-    </style>
-</head>
-<body>
+  <body>
     <div class="container">
-        <h1 class="mb-4">AlexNet Image Classifier</h1>
-        <form id="image-form" class="mb-4">
-            <div class="form-group">
-                <label for="image">Select an image:</label>
-                <input type="file" class="form-control-file" id="image" name="image">
-                <img id="uploaded-image" src="#" alt="Uploaded Image"/>
-            </div>
-            <button type="submit" class="btn btn-primary">Classify Image</button>
-        </form>
-        <div id="result"></div>
+      <h1 class="mb-4">AlexNet Image Classifier</h1>
+      <form id="image-form" class="mb-4">
+        <div class="form-group">
+          <label for="image">Select an image:</label>
+          <input
+            type="file"
+            class="form-control-file"
+            id="image"
+            name="image"
+          />
+          <img id="uploaded-image" src="#" alt="Uploaded Image" />
+        </div>
+        <button type="submit" class="btn btn-primary">Classify Image</button>
+      </form>
+      <div id="result"></div>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
@@ -97,42 +35,44 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 
     <script>
-        const imageInput = document.getElementById('image');
-        const uploadedImage = document.getElementById('uploaded-image');
+      const imageInput = document.getElementById("image");
+      const uploadedImage = document.getElementById("uploaded-image");
 
-        imageInput.addEventListener('change', (event) => {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    uploadedImage.src = e.target.result;
-                    uploadedImage.style.display = 'block';
-                };
-                reader.readAsDataURL(file);
-            }
-        });
+      imageInput.addEventListener("change", (event) => {
+        const file = event.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            uploadedImage.src = e.target.result;
+            uploadedImage.style.display = "block";
+          };
+          reader.readAsDataURL(file);
+        }
+      });
 
-        const form = document.getElementById('image-form');
-        const resultDiv = document.getElementById('result');
+      const form = document.getElementById("image-form");
+      const resultDiv = document.getElementById("result");
 
-        form.addEventListener('submit', (event) => {
-            event.preventDefault();
-            const formData = new FormData(form);
-            fetch('/predict', {
-                method: 'POST',
-                body: formData
-            }).then((response) => {
-                return response.json();
-            }).then((result) => {
-                resultDiv.innerHTML = '';
-                resultDiv.innerHTML += `
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+        const formData = new FormData(form);
+        fetch("/predict", {
+          method: "POST",
+          body: formData,
+        })
+          .then((response) => {
+            return response.json();
+          })
+          .then((result) => {
+            resultDiv.innerHTML = "";
+            resultDiv.innerHTML += `
                     <div class="alert alert-primary" role="alert">
                         <h3 class="alert-heading">Classification Results</h3>
                         <p>Here are the top 5 results for the image you uploaded.</p>
                     </div>
                 `;
-                // Create an HTML table
-                resultDiv.innerHTML += `
+            // Create an HTML table
+            resultDiv.innerHTML += `
                     <table class="table">
                         <thead>
                             <tr>
@@ -145,26 +85,36 @@
                     </table>
                 `;
 
-                // Add the classification results to the table
-                const tableBody = resultDiv.querySelector("tbody");
-                for (let i = 0; i< result.length; i++) {
-                    tableBody.innerHTML += `
+            // Add the classification results to the table
+            const tableBody = resultDiv.querySelector("tbody");
+            for (let i = 0; i < result.length; i++) {
+              tableBody.innerHTML += `
                         <tr>
-                            <td class="result-column">${i+1}</td>
-                            <td class="class-column">${result[i].class.substring(result[i].class.indexOf(' ') + 1)}</td>
+                            <td class="result-column">${i + 1}</td>
+                            <td class="class-column">${result[
+                              i
+                            ].class.substring(
+                              result[i].class.indexOf(" ") + 1
+                            )}</td>
                             <td>
                                 <div class="progress">
-                                    <div class="progress-bar" role="progressbar" style="width: ${(result[i].probability * 100).toFixed(2)}%;" aria-valuenow="${(result[i].probability * 100).toFixed(2)}" aria-valuemin="0" aria-valuemax="100">${(result[i].probability * 100).toFixed(2)}%</div>
+                                    <div class="progress-bar" role="progressbar" style="width: ${(
+                                      result[i].probability * 100
+                                    ).toFixed(2)}%;" aria-valuenow="${(
+                result[i].probability * 100
+              ).toFixed(2)}" aria-valuemin="0" aria-valuemax="100">${(
+                result[i].probability * 100
+              ).toFixed(2)}%</div>
                                 </div>
                             </td>
                         </tr>
                     `;
-                }
-            }).catch((error) => {
-                console.error(error);
-            });
-        });
-
+            }
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+      });
     </script>
-</body>
+  </body>
 </html>
