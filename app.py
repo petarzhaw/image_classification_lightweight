@@ -1,7 +1,6 @@
 import io
 import numpy as np
 import onnxruntime
-import onnx
 from flask_bootstrap import Bootstrap
 from PIL import Image
 from flask import Flask, render_template, request, jsonify
@@ -21,29 +20,42 @@ inference = onnxruntime.InferenceSession(model_path, providers=['CPUExecutionPro
 input_name = inference.get_inputs()[0].name
 print(input_name)
 
+# Load the class labels
 with open('static/synset.txt', 'r') as f: 
-    class_dict = [line.strip() for line in f.readlines()] # Load the class labels
+    class_dict = [line.strip() for line in f.readlines()] 
 
 @app.route('/', methods=['GET'])
 def index():
+    """
+    Renders the home page of the web application.
+    """
     return render_template('index.html')
 
 @app.route('/predict', methods=['POST'])
 def predict():
+    """
+    Takes an image file as input and returns a list of top 5 
+    predicted classes along with their probabilities.
+    """
     img_bytes = request.files['image'].read()
     img = Image.open(io.BytesIO(img_bytes))
-    img = img.convert('RGB')    
-    img = img.resize((224, 224))  # Resize the image to the expected input size for AlexNet
-    img_arr = np.array(img).astype(np.float32)  # Convert the image to a numpy array
-    mean = np.array([123.68, 116.779, 103.939], dtype=np.float32)  # Update the mean pixel values
-    std = np.array([1, 1, 1], dtype=np.float32)  # Set the standard deviation to 1 for each channel
+    img = img.convert('RGB')   
+     # Resize the image to the expected input size for AlexNet 
+    img = img.resize((224, 224)) 
+    # Convert the image to a numpy array
+    img_arr = np.array(img).astype(np.float32)  
+    # Update the mean pixel values to match the expected input
+    mean = np.array([123.68, 116.779, 103.939], dtype=np.float32)  
+    # Set the standard deviation to 1 for each channel
+    std = np.array([1, 1, 1], dtype=np.float32)  
 
-    img_arr = img_arr - mean  # Subtract the mean directly
-    img_arr = img_arr / std  # Normalize using the provided mean and std
+    img_arr = img_arr - mean  
+    img_arr = img_arr / std  
 
-
-    img_arr = np.expand_dims(img_arr, axis=0)  # Add a batch dimension
-    img_arr = np.transpose(img_arr, (0, 3, 1, 2))  # Transpose to (batch_size, channels, height, width)
+    # Add a batch dimension
+    img_arr = np.expand_dims(img_arr, axis=0) 
+    # Transpose to (batch_size, channels, height, width)
+    img_arr = np.transpose(img_arr, (0, 3, 1, 2))  
 
     output = inference.run(None, {"data_0": img_arr})
     
