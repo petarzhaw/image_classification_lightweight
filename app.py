@@ -14,17 +14,16 @@ Bootstrap(app)
  # Path to the model
 model_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'bvlcalexnet-12-qdq.onnx')
 # Load the model
-inference = onnxruntime.InferenceSession(model_path, providers=['CPUExecutionProvider'])
+#The CPUExecutionProvider is used to ensure that the model is executed using CPU resources for computation, which can be useful in cases where a GPU is either not available or not required for the specific task.
+inference = onnxruntime.InferenceSession(model_path, providers=['CPUExecutionProvider']) # CPUExecutionProvider is used for CPU inference
 
-# Load the model
-#model = onnx.load('squeezenet1.0-12-int8.onnx')
 
-# Get the input node (the first node of the graph)
+# Get the input node (the first node of the graph) - this is the input
 input_name = inference.get_inputs()[0].name
 print(input_name)
 
-with open('static/synset.txt', 'r') as f:
-    class_dict = [line.strip() for line in f.readlines()]
+with open('static/synset.txt', 'r') as f: 
+    class_dict = [line.strip() for line in f.readlines()] # Load the class labels
 
 @app.route('/', methods=['GET'])
 def index():
