@@ -6,7 +6,6 @@ from flask_bootstrap import Bootstrap
 from PIL import Image
 from flask import Flask, render_template, request, jsonify
 import os
-os.environ['PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION'] = 'python'
 
 app = Flask(__name__)
 Bootstrap(app)
