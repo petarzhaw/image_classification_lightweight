@@ -4,6 +4,9 @@ img {
   margin-right: auto;
   width: 50%;
 }
+form {
+  justify-content: center;
+}
 p {
   color: #f0f0f0;
 }

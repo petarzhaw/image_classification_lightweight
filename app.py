@@ -15,7 +15,6 @@ model_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'bvlcalexn
 #The CPUExecutionProvider is used to ensure that the model is executed using CPU resources for computation, which can be useful in cases where a GPU is either not available or not required for the specific task.
 inference = onnxruntime.InferenceSession(model_path, providers=['CPUExecutionProvider']) # CPUExecutionProvider is used for CPU inference
 
-
 # Get the input node (the first node of the graph) - this is the input
 input_name = inference.get_inputs()[0].name
 print(input_name)
