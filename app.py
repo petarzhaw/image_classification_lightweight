@@ -38,8 +38,9 @@ def predict():
     """
     img_bytes = request.files['image'].read()
     img = Image.open(io.BytesIO(img_bytes))
+    # Open the image using the Python Imaging Library (PIL) and convert it to the RGB color space.
     img = img.convert('RGB')   
-     # Resize the image to the expected input size for AlexNet 
+    # Resize the image to the expected input size for AlexNet 
     img = img.resize((224, 224)) 
     # Convert the image to a numpy array
     img_arr = np.array(img).astype(np.float32)  
@@ -56,9 +57,11 @@ def predict():
     # Transpose to (batch_size, channels, height, width)
     img_arr = np.transpose(img_arr, (0, 3, 1, 2))  
 
+    # Run inference using the pre-trained model and the input image
+    # inference is the process of using a trained model to make predictions based on new, unseen input data
     output = inference.run(None, {"data_0": img_arr})
     
-    # make predictions
+    # extract probabilities and identify the top 5 classes
     probs = np.squeeze(output)
     top_indices = np.argsort(probs)[::-1][:5]
     top_probs = probs[top_indices]
